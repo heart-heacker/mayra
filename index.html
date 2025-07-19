@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Will You Be Mine?</title>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: black;
+      font-family: 'Poppins', sans-serif;
+      color: #00ff9f;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    #countdown {
+      z-index: 1;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 6em;
+      font-weight: 900;
+      background: linear-gradient(45deg, #ff00cc, #00ffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 25px #ff00cc, 0 0 45px #00ffff;
+      animation: pulse 1s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.1); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+
+    #message {
+      display: none;
+      position: absolute;
+      top: 8%;
+      width: 100%;
+      text-align: center;
+      font-size: 3em;
+      font-family: 'Great Vibes', cursive;
+      color: #ffccff;
+      text-shadow: 0 0 15px #ff69b4, 0 0 30px #ff1493;
+      z-index: 2;
+      animation: fadeIn 3s ease-in forwards;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(-30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    #gif {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 90%;
+      max-height: 80%;
+      z-index: 2;
+      border-radius: 12px;
+      box-shadow: 0 0 40px pink;
+    }
+
+    #buttons {
+      display: none;
+      position: absolute;
+      top: 80%;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+    }
+
+    .btn {
+      padding: 15px 25px;
+      margin: 10px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      transition: 0.3s ease;
+    }
+
+    .yes {
+      background: #00ff99;
+      color: black;
+    }
+
+    .no {
+      background: #ff4d4d;
+      color: white;
+      position: absolute;
+    }
+
+    .btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px white;
+    }
+
+    #finalMessage {
+      display: none;
+      text-align: center;
+      position: absolute;
+      top: 20%;
+      width: 100%;
+      font-size: 2em;
+      color: #fff;
+      z-index: 4;
+      animation: fadeIn 2s ease-in;
+    }
+
+    audio {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Matrix Background -->
+  <canvas id="matrixCanvas"></canvas>
+
+  <!-- Countdown -->
+  <div id="countdown">3</div>
+
+  <!-- Romantic Message -->
+  <div id="message">💖 Will you be mine? 💘</div>
+
+  <!-- Proposal GIF -->
+  <img id="gif" src="https://media0.giphy.com/media/v1.Y2lkPTZjMDliOTUyN2pyZ2FwNnZpdTBhZmw3ZXhia2M0cmlhNXl3dnFrMnYwZmNhdnpieSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/09Tpq7gPthMUMvKt6K/giphy.gif" alt="Proposal GIF"/>
+
+  <!-- Yes / No Buttons -->
+  <div id="buttons">
+    <button class="btn yes" onclick="handleYes()">Yes 💘</button>
+    <button class="btn no" onclick="handleNo()">No ❌</button>
+  </div>
+
+  <!-- Final Message -->
+  <div id="finalMessage">Yay! I knew it! ❤️ You're mine forever 💍</div>
+
+  <!-- Background Music -->
+  <audio autoplay loop>
+    <source src="jaane_meriye.mp3" type="audio/mp3" />
+  </audio>
+
+  <script>
+    // Matrix Effect
+    const canvas = document.getElementById("matrixCanvas");
+    const ctx = canvas.getContext("2d");
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+    const letters = "010LOVE010❤💗💘";
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    const drops = Array(Math.floor(columns)).fill(1);
+
+    function drawMatrix() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#0f0";
+      ctx.font = fontSize + "px monospace";
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters.charAt(Math.floor(Math.random() * letters.length));
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+    }
+
+    setInterval(drawMatrix, 50);
+
+    // Countdown Logic
+    let count = 3;
+    const countdownEl = document.getElementById("countdown");
+    const gifEl = document.getElementById("gif");
+    const msgEl = document.getElementById("message");
+    const btnEl = document.getElementById("buttons");
+    const finalEl = document.getElementById("finalMessage");
+
+    const countdownInterval = setInterval(() => {
+      count--;
+      if (count > 0) {
+        countdownEl.textContent = count;
+      } else {
+        clearInterval(countdownInterval);
+        countdownEl.style.opacity = 0;
+        gifEl.style.display = "block";
+        msgEl.style.display = "block";
+        btnEl.style.display = "block";
+      }
+    }, 1000);
+
+    function handleYes() {
+      btnEl.style.display = "none";
+      msgEl.style.display = "none";
+      finalEl.style.display = "block";
+    }
+
+    function handleNo() {
+      msgEl.textContent = "Please... give me a chance 🙏💗";
+      const noBtn = document.querySelector(".no");
+      const randomTop = Math.floor(Math.random() * 80) + 10;
+      const randomLeft = Math.floor(Math.random() * 80) + 10;
+      noBtn.style.top = randomTop + "%";
+      noBtn.style.left = randomLeft + "%";
+    }
+  </script>
+</body>
+</html>
